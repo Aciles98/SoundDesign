@@ -1,32 +1,75 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sound Lab – SoundDesign</title>
     <style>
+      /* Theme: light (design system) */
       :root {
         color-scheme: light;
-        --bg: #ffffff;
+        --bg: #f4f4f5;
         --panel: #ffffff;
-        --text: #1e293b;
-        --muted: #64748b;
-        --accent: #2563eb;
-        --accent-dim: rgba(37, 99, 235, 0.12);
-        --border: #e2e8f0;
-        --border-inactive: #cbd5e1;
-        --gray-a3: rgba(0, 0, 0, 0.04);
-        --gray-3: #c2c2c2;
-        --black-a1: rgba(0, 0, 0, 0.05);
-        --gray-a2: rgba(0, 0, 0, 0.06);
+        --content2: #f4f4f5;
+        --content3: #e4e4e7;
+        --content4: #d4d4d8;
+        --text: #000000;
+        --muted: #8a8a8c;
+        --accent: #006fee;
+        --accent-dim: #dfedfd;
+        --border: #e3e3e6;
+        --border-inactive: #d4d4d8;
+        --default-400: #dcdcdf;
+        --default-500: #d4d4d8;
+        --default-600: #afafb2;
+        --default-700: #8a8a8c;
+        --default-800: #656567;
+        --shadow-subtle: rgba(0, 0, 0, 0.04);
+        --shadow-edge: rgba(0, 0, 0, 0.05);
+      }
+      [data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #000000;
+        --panel: #18181b;
+        --content2: #27272a;
+        --content3: #3f3f46;
+        --content4: #52525b;
+        --text: #ffffff;
+        --muted: #b2b2b5;
+        --accent: #006fee;
+        --accent-dim: #002147;
+        --border: #3f3f46;
+        --border-inactive: #52525b;
+        --default-400: #3f3f46;
+        --default-500: #65656b;
+        --default-600: #8c8c90;
+        --default-700: #b2b2b5;
+        --default-800: #d9d9da;
+        --shadow-subtle: rgba(255, 255, 255, 0.04);
+        --shadow-edge: rgba(255, 255, 255, 0.06);
+      }
+      [data-theme="dark"] .pad {
+        background: var(--content2);
+        border-color: var(--content4);
+      }
+      [data-theme="dark"] .pad:hover {
+        background: var(--content3);
       }
       body[data-collection="Glass"] {
-        --accent: color(display-p3 0.553 0.553 0.553);
-        --accent-dim: color(display-p3 0.553 0.553 0.553 / 0.12);
+        --accent: #65656b;
+        --accent-dim: #3f3f46;
+      }
+      [data-theme="dark"] body[data-collection="Glass"] {
+        --accent: #8c8c90;
+        --accent-dim: #323238;
       }
       body[data-collection="Agent"] {
-        --accent: #c026d3;
-        --accent-dim: rgba(192, 38, 211, 0.18);
+        --accent: #7828c8;
+        --accent-dim: #eee4f8;
+      }
+      [data-theme="dark"] body[data-collection="Agent"] {
+        --accent: #904ed2;
+        --accent-dim: #39135f;
       }
       * {
         box-sizing: border-box;
@@ -34,19 +77,25 @@
       body {
         margin: 0;
         font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: color(display-p3 0.975 0.975 0.975);
+        background: var(--bg);
         color: var(--text);
         padding: 28px;
       }
       .wrap {
         max-width: 720px;
         margin: 0 auto;
-        display: grid;
-        gap: 0;
+        display: flex;
+        flex-direction: column;
       }
       header {
-        display: grid;
-        gap: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 32px;
+      }
+      .sound-lab-card {
         margin-bottom: 32px;
       }
       h1 {
@@ -56,6 +105,44 @@
         font-weight: 600;
         letter-spacing: -0.087px;
         color: var(--text);
+      }
+      .header-switch-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .switch {
+        width: 40px;
+        height: 24px;
+        flex-shrink: 0;
+        border: none;
+        padding: 0;
+        margin: 0;
+        border-radius: 12px;
+        background: var(--default-400);
+        cursor: pointer;
+        position: relative;
+        transition: background 0.2s ease;
+      }
+      .switch[aria-checked="true"] {
+        background: var(--accent);
+      }
+      .switch-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      .switch[aria-checked="true"] .switch-thumb {
+        transform: translateX(16px);
       }
       h2 {
         margin: 0;
@@ -82,8 +169,8 @@
         min-height: 384px;
         max-height: 512px;
         border-radius: 12px;
-        background: #fff;
-        box-shadow: 0 0 0 1px color-mix(in oklab, var(--gray-a3), var(--gray-3) 25%), 0 0 0 0.5px var(--black-a1), 0 1px 1px 0 var(--gray-a2), 0 2px 1px -1px var(--black-a1), 0 1px 3px 0 var(--black-a1);
+        background: var(--panel);
+        box-shadow: 0 0 0 1px var(--border), 0 1px 3px var(--shadow-subtle);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -102,14 +189,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 4px 14px color-mix(in oklch, var(--accent) 30%, transparent);
         cursor: pointer;
-      }
-      body[data-collection="Glass"] .active-sound-circle {
-        box-shadow: 0 4px 14px color(display-p3 0.553 0.553 0.553 / 0.25);
-      }
-      body[data-collection="Agent"] .active-sound-circle {
-        box-shadow: 0 4px 14px rgba(192, 38, 211, 0.35);
       }
       .active-sound-circle .icon {
         width: 32px;
@@ -168,7 +249,7 @@
         font-family: "Inter", system-ui, sans-serif;
         font-size: 12px;
         font-weight: 600;
-        color: color(display-p3 0.512 0.512 0.512);
+        color: var(--default-700);
         text-align: center;
       }
       .pad-grid {
@@ -181,9 +262,9 @@
         height: 36px;
         padding: 0;
         border-radius: 8px;
-        border: 1px solid color(display-p3 0 0 0 / 0.09);
+        border: 1px solid var(--border);
         background: var(--panel);
-        color: color(display-p3 0 0 0 / 0.09);
+        color: var(--default-600);
         cursor: pointer;
         display: flex;
         justify-content: center;
@@ -192,8 +273,8 @@
         font-size: 0;
       }
       .pad:hover {
-        color: color(display-p3 0 0 0 / 0.122);
-        border-color: color(display-p3 0 0 0 / 0.122);
+        color: var(--default-800);
+        border-color: var(--default-500);
       }
       .pad:active {
         transform: scale(0.98);
@@ -212,7 +293,7 @@
         flex-shrink: 0;
       }
       .pad:not(.active) .icon {
-        color: #666;
+        color: var(--default-700);
       }
       .pad .icon path {
         fill: currentColor;
@@ -247,9 +328,155 @@
       input[type="range"] {
         width: 100px;
       }
+      .volume-slider-wrap {
+        --slider-fill: #22c55e;
+        --slider-track: #e5e7eb;
+        --default-transition-duration: 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        max-width: 28rem;
+        margin: 0 auto;
+        min-height: 28px;
+        border-radius: 100%;
+      }
+      [data-theme="dark"] .volume-slider-wrap {
+        --slider-track: #3f3f46;
+      }
+      .volume-slider-wrap .volume-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        flex-shrink: 0;
+        color: var(--default-700);
+      }
+      .volume-slider-inner {
+        flex: 1;
+        min-width: 0;
+        position: relative;
+        height: 28px;
+      }
+      .volume-slider-track {
+        position: absolute;
+        inset: 0;
+        height: 28px;
+        border-radius: 14px;
+        background: var(--slider-track);
+      }
+      .volume-slider-fill {
+        
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 28px;
+        width: var(--slider-pct, 40%);
+        margin-right: 8px;
+        background: var(--slider-fill);
+        border-radius: 14px;
+      }
+      .volume-slider-thumb {
+      min-width: 32px;
+        position: absolute;
+        left: calc(var(--slider-pct, 40%) - 16px);
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 32px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .volume-slider-thumb-ball {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0px 0px 5px 0px #00000005, 0px 2px 10px 0px #0000000f, 0px 0px 1px 0px #0000004d;
+        transition: transform var(--default-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .volume-slider-wrap.thumb-hover .volume-slider-thumb-ball,
+      .volume-slider-wrap.thumb-active .volume-slider-thumb-ball {
+        transform: scale(0.8);
+      }
+      .volume-slider-wrap .volume-slider {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 28px;
+        margin: 0;
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+        z-index: 1;
+      }
+      .volume-slider-wrap .volume-slider:focus {
+        outline: none;
+      }
+      .volume-slider-wrap .volume-slider::-webkit-slider-runnable-track {
+        height: 28px;
+        background: transparent;
+      }
+      .volume-slider-wrap .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 28px;
+        height: 28px;
+        margin-top: 0;
+        border-radius: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+      .volume-slider-wrap .volume-slider::-moz-range-track {
+        height: 28px;
+        background: transparent;
+      }
+      .volume-slider-wrap .volume-slider::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+        border-radius: 0;
+        background: transparent;
+        cursor: pointer;
+        border: none;
+      }
       .footer {
         font-size: 12px;
         color: var(--muted);
+      }
+
+      /* Mobile: same behaviour, 44px pads, 20px icons, divider hidden, modes inline below 3x3 */
+      @media (max-width: 640px) {
+        .pickers-wrapper {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .pickers-divider {
+          display: none;
+        }
+        .pad-grid {
+          grid-template-columns: repeat(3, 44px);
+          gap: 0.5rem;
+        }
+        .pad {
+          width: 44px;
+          height: 44px;
+        }
+        .pad .icon {
+          width: 20px;
+          height: 20px;
+        }
+        #sectionConcepts .pad-grid {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 8px;
+          grid-template-columns: unset;
+        }
+        #sectionConcepts .pad-grid .pad:disabled {
+          display: none;
+        }
       }
     </style>
   </head>
@@ -257,6 +484,11 @@
     <div class="wrap">
       <header>
         <h1>Sound Lab</h1>
+        <div class="header-switch-wrap">
+          <button type="button" class="switch" id="themeSwitch" role="switch" aria-checked="false" aria-label="Tema oscuro">
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
       </header>
 
       <section class="controls-bar">
@@ -281,7 +513,7 @@
             <button type="button" class="pad" id="btnClick" data-label="Click"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 1.5a.75.75 0 0 1 .75.75V4.5a.75.75 0 0 1-1.5 0V2.25A.75.75 0 0 1 12 1.5ZM5.636 4.136a.75.75 0 0 1 1.06 0l1.592 1.591a.75.75 0 0 1-1.061 1.06l-1.591-1.59a.75.75 0 0 1 0-1.061Zm12.728 0a.75.75 0 0 1 0 1.06l-1.591 1.592a.75.75 0 0 1-1.06-1.061l1.59-1.591a.75.75 0 0 1 1.061 0Zm-6.816 4.496a.75.75 0 0 1 .82.311l5.228 7.917a.75.75 0 0 1-.777 1.148l-2.097-.43 1.045 3.9a.75.75 0 0 1-1.45.388l-1.044-3.899-1.601 1.42a.75.75 0 0 1-1.247-.606l.569-9.47a.75.75 0 0 1 .554-.68ZM3 10.5a.75.75 0 0 1 .75-.75H6a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 10.5Zm14.25 0a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0 1.5H18a.75.75 0 0 1-.75-.75Zm-8.962 3.712a.75.75 0 0 1 0 1.061l-1.591 1.591a.75.75 0 1 1-1.061-1.06l1.591-1.592a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/></svg>Click</button>
             <button type="button" class="pad" id="btnPop" data-label="Pop"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M17.303 5.197A7.5 7.5 0 0 0 6.697 15.803a.75.75 0 0 1-1.061 1.061A9 9 0 1 1 21 10.5a.75.75 0 0 1-1.5 0c0-1.92-.732-3.839-2.197-5.303Zm-2.121 2.121a4.5 4.5 0 0 0-6.364 6.364.75.75 0 1 1-1.06 1.06A6 6 0 1 1 18 10.5a.75.75 0 0 1-1.5 0c0-1.153-.44-2.303-1.318-3.182Zm-3.634 1.314a.75.75 0 0 1 .82.311l5.228 7.917a.75.75 0 0 1-.777 1.148l-2.097-.43 1.045 3.9a.75.75 0 0 1-1.45.388l-1.044-3.899-1.601 1.42a.75.75 0 0 1-1.247-.606l.569-9.47a.75.75 0 0 1 .554-.68Z" clip-rule="evenodd"/></svg>Pop</button>
             <button type="button" class="pad" id="btnTick" data-label="Tick"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"/></svg>Tick</button>
-            <button type="button" class="pad" id="btnToggle" data-label="Toggle" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M15.97 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H7.5a.75.75 0 0 1 0-1.5h11.69l-3.22-3.22a.75.75 0 0 1 0-1.06Zm-7.94 9a.75.75 0 0 1 0 1.06l-3.22 3.22H16.5a.75.75 0 0 1 0 1.5H4.81l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/></svg><span id="toggleLabel">Toggle</span></button>
+            <button type="button" class="pad" id="btnToggle" data-label="Toggle" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M15.97 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H7.5a.75.75 0 0 1 0-1.5h11.69l-3.22-3.22a.75.75 0 0 1 0-1.06Zm-7.94 9a.75.75 0 0 1 0 1.06l-3.22 3.22H16.5a.75.75 0 0 1 0 1.5H4.81l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/></svg><span id="toggleLabel">Toggle Off</span></button>
             <button type="button" class="pad" id="btnDrop" data-label="Drop"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v16.19l6.22-6.22a.75.75 0 1 1 1.06 1.06l-7.5 7.5a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 1 1 1.06-1.06l6.22 6.22V3a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd"/></svg>Drop</button>
             <button type="button" class="pad" id="btnSuccess" data-label="Success"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/></svg>Success</button>
             <button type="button" class="pad" id="btnError" data-label="Error"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd"/></svg>Error</button>
@@ -310,8 +542,38 @@
         </div>
       </div>
 
+      <section class="volume-slider-wrap" aria-label="Volumen">
+        <svg class="volume-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" focusable="false">
+          <path d="M19.3284 16.7503C19.1684 16.7503 19.0184 16.7003 18.8784 16.6003C18.5484 16.3503 18.4784 15.8803 18.7284 15.5503C20.2984 13.4603 20.2984 10.5403 18.7284 8.45027C18.4784 8.12027 18.5484 7.65027 18.8784 7.40027C19.2084 7.15027 19.6784 7.22027 19.9284 7.55027C21.8984 10.1703 21.8984 13.8303 19.9284 16.4503C19.7884 16.6503 19.5584 16.7503 19.3284 16.7503Z" fill="currentColor"/>
+          <path d="M15.3481 3.78168C14.2281 3.16168 12.7981 3.32168 11.3381 4.23168L8.41813 6.06168C8.21813 6.18168 7.98813 6.25168 7.75813 6.25168H6.82812H6.32812C3.90812 6.25168 2.57812 7.58168 2.57812 10.0017V14.0017C2.57812 16.4217 3.90812 17.7517 6.32812 17.7517H6.82812H7.75813C7.98813 17.7517 8.21813 17.8217 8.41813 17.9417L11.3381 19.7717C12.2181 20.3217 13.0781 20.5917 13.8781 20.5917C14.3981 20.5917 14.8981 20.4717 15.3481 20.2217C16.4581 19.6017 17.0781 18.3117 17.0781 16.5917V7.41168C17.0781 5.69168 16.4581 4.40168 15.3481 3.78168Z" fill="currentColor"/>
+        </svg>
+        <div class="volume-slider-inner">
+          <div class="volume-slider-track" aria-hidden="true" data-slot="track">
+            <div class="volume-slider-fill" data-slot="filler"></div>
+            <div class="volume-slider-thumb" id="volumeSliderThumb" aria-hidden="true" data-slot="thumb">
+              <div class="volume-slider-thumb-ball"></div>
+            </div>
+          </div>
+          <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="40" aria-label="Volumen" />
+        </div>
+        <svg class="volume-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" focusable="false">
+          <path d="M18.0003 16.7503C17.8403 16.7503 17.6903 16.7003 17.5503 16.6003C17.2203 16.3503 17.1503 15.8803 17.4003 15.5503C18.9703 13.4603 18.9703 10.5403 17.4003 8.45027C17.1503 8.12027 17.2203 7.65027 17.5503 7.40027C17.8803 7.15027 18.3503 7.22027 18.6003 7.55027C20.5603 10.1703 20.5603 13.8303 18.6003 16.4503C18.4503 16.6503 18.2303 16.7503 18.0003 16.7503Z" fill="currentColor"/>
+          <path d="M19.8284 19.2503C19.6684 19.2503 19.5184 19.2003 19.3784 19.1003C19.0484 18.8503 18.9784 18.3803 19.2284 18.0503C21.8984 14.4903 21.8984 9.51027 19.2284 5.95027C18.9784 5.62027 19.0484 5.15027 19.3784 4.90027C19.7084 4.65027 20.1784 4.72027 20.4284 5.05027C23.4984 9.14027 23.4984 14.8603 20.4284 18.9503C20.2884 19.1503 20.0584 19.2503 19.8284 19.2503Z" fill="currentColor"/>
+          <path d="M14.02 3.78168C12.9 3.16168 11.47 3.32168 10.01 4.23168L7.09 6.06168C6.89 6.18168 6.66 6.25168 6.43 6.25168H5.5H5C2.58 6.25168 1.25 7.58168 1.25 10.0017V14.0017C1.25 16.4217 2.58 17.7517 5 17.7517H5.5H6.43C6.66 17.7517 6.89 17.8217 7.09 17.9417L10.01 19.7717C10.89 20.3217 11.75 20.5917 12.55 20.5917C13.07 20.5917 13.57 20.4717 14.02 20.2217C15.13 19.6017 15.75 18.3117 15.75 16.5917V7.41168C15.75 5.69168 15.13 4.40168 14.02 3.78168Z" fill="currentColor"/>
+        </svg>
+      </section>
+
     </div>
 
+    <script>
+      (function () {
+        var theme = "light";
+        try {
+          if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) theme = "dark";
+        } catch (e) {}
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
     <script>
       if (window.location.protocol === "file:") {
         document.body.innerHTML = "<div style=\"font-family:system-ui;max-width:420px;margin:2rem auto;padding:1.5rem;text-align:center;background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;color:#92400e;\"><p style=\"margin:0 0 0.5rem;font-weight:600;\">No funciona con file://</p><p style=\"margin:0;font-size:0.9rem;\">Los módulos ES no se cargan al abrir el HTML directamente. Desde la carpeta del proyecto ejecuta en la terminal:</p><code style=\"display:block;margin:1rem 0;padding:0.75rem;background:#fff;border-radius:8px;font-size:0.85rem;\">python3 -m http.server 5173</code><p style=\"margin:0;font-size:0.9rem;\">Luego abre <strong>http://localhost:5173</strong> en el navegador.</p></div>";
@@ -342,6 +604,43 @@
       const activeSoundLabel = document.getElementById("activeSoundLabel");
       const sectionClick = document.getElementById("sectionClick");
       const sectionConcepts = document.getElementById("sectionConcepts");
+      const volumeSliderEl = document.getElementById("volumeSlider");
+
+      if (volumeSliderEl) {
+        var wrap = volumeSliderEl.closest(".volume-slider-wrap");
+        var inner = document.querySelector(".volume-slider-inner");
+        var thumbEl = document.getElementById("volumeSliderThumb");
+        function updateSliderUI() {
+          if (wrap) wrap.style.setProperty("--slider-pct", volumeSliderEl.value + "%");
+        }
+        function addThumbActive() {
+          if (wrap) wrap.classList.add("thumb-active");
+        }
+        function removeThumbActive() {
+          if (wrap) wrap.classList.remove("thumb-active");
+        }
+        updateSliderUI();
+        setMasterVolume(Number(volumeSliderEl.value) / 100);
+        volumeSliderEl.addEventListener("input", function () {
+          updateSliderUI();
+          setMasterVolume(Number(volumeSliderEl.value) / 100);
+        });
+        volumeSliderEl.addEventListener("mousedown", addThumbActive);
+        volumeSliderEl.addEventListener("touchstart", addThumbActive, { passive: true });
+        volumeSliderEl.addEventListener("mouseup", removeThumbActive);
+        volumeSliderEl.addEventListener("mouseleave", removeThumbActive);
+        volumeSliderEl.addEventListener("touchend", removeThumbActive);
+        volumeSliderEl.addEventListener("touchcancel", removeThumbActive);
+        if (inner && wrap) {
+          inner.addEventListener("mousemove", function (e) {
+            var pct = Number(volumeSliderEl.value) / 100;
+            var thumbCenterX = inner.getBoundingClientRect().left + pct * inner.offsetWidth - 4;
+            if (Math.abs(e.clientX - thumbCenterX) <= 14) wrap.classList.add("thumb-hover");
+            else wrap.classList.remove("thumb-hover");
+          });
+          inner.addEventListener("mouseleave", function () { wrap.classList.remove("thumb-hover"); });
+        }
+      }
 
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let soundEnabled = true;
@@ -433,6 +732,21 @@
       document.getElementById("btnAgent")?.addEventListener("click", () => applyCollectionUI("Agent"));
       applyCollectionUI(getCurrentCollectionName());
 
+      const themeSwitchEl = document.getElementById("themeSwitch");
+      function updateThemeSwitchLabel() {
+        if (!themeSwitchEl) return;
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        themeSwitchEl.setAttribute("aria-checked", isDark);
+        themeSwitchEl.setAttribute("aria-label", isDark ? "Tema oscuro activado" : "Activar tema oscuro");
+      }
+      if (themeSwitchEl) {
+        updateThemeSwitchLabel();
+        themeSwitchEl.addEventListener("click", () => {
+          const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          document.documentElement.setAttribute("data-theme", next);
+          updateThemeSwitchLabel();
+        });
+      }
       if (soundEnabledEl) soundEnabledEl.addEventListener("change", () => { soundEnabled = soundEnabledEl.checked; });
 
       const clickPads = [

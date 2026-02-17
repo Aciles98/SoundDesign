@@ -33,14 +33,14 @@ async function pingPongTick(options = {}) {
   const t = ctx.currentTime;
   const osc = ctx.createOscillator();
   osc.type = "sine";
-  osc.frequency.setValueAtTime(options.freq ?? 1100, t);
+  osc.frequency.setValueAtTime(options.freq ?? 880, t);
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(clamp01(options.peak, 0.26), t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.055);
+  gain.gain.setValueAtTime(clamp01(options.peak, 0.22), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
   osc.connect(gain);
   gain.connect(out);
   osc.start(t);
-  osc.stop(t + 0.065);
+  osc.stop(t + 0.055);
   cleanupOnEnded(osc, [gain]);
 }
 async function pingPongPop(options = {}) {
@@ -101,7 +101,7 @@ async function pingPongSuccess(options = {}) {
   const out = getMasterGain();
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.26);
-  const f1 = options.f0 ?? 523, f2 = options.f1 ?? 659;
+  const f1 = options.f0 ?? 523.25, f2 = options.f1 ?? 659.25;
   const toneDur = 0.1, gap = 0.06;
   const playTone = (startTime, freq) => {
     const osc = ctx.createOscillator();
@@ -208,14 +208,14 @@ async function glassTick(options = {}) {
   const t = ctx.currentTime;
   const osc = ctx.createOscillator();
   osc.type = "triangle";
-  osc.frequency.setValueAtTime(options.freq ?? 1800, t);
+  osc.frequency.setValueAtTime(options.freq ?? 1500, t);
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(clamp01(options.peak, 0.3), t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.032);
+  gain.gain.setValueAtTime(clamp01(options.peak, 0.28), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
   osc.connect(gain);
   gain.connect(out);
   osc.start(t);
-  osc.stop(t + 0.042);
+  osc.stop(t + 0.045);
   cleanupOnEnded(osc, [gain]);
 }
 async function glassPop(options = {}) {
@@ -274,8 +274,8 @@ async function glassSuccess(options = {}) {
   const out = getMasterGain();
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.3);
-  const f1 = options.f0 ?? 580, f2 = options.f1 ?? 740;
-  const toneDur = 0.065, gap = 0.04;
+  const f1 = options.f0 ?? 1318.5, f2 = options.f1 ?? 1760;
+  const toneDur = 0.055, gap = 0.032;
   const playTone = (startTime, freq) => {
     const osc = ctx.createOscillator();
     osc.type = "triangle";
@@ -404,11 +404,11 @@ async function agentTick(options = {}) {
   const t = ctx.currentTime;
   const osc = ctx.createOscillator();
   osc.type = "sine";
-  osc.frequency.setValueAtTime(options.freq ?? 1500, t);
-  const chain = agentChain(ctx, out, t, { peak: clamp01(options.peak, 0.38), decaySec: 0.06 });
+  osc.frequency.setValueAtTime(options.freq ?? 1100, t);
+  const chain = agentChain(ctx, out, t, { peak: clamp01(options.peak, 0.3), decaySec: 0.09 });
   osc.connect(chain.filter);
   osc.start(t);
-  osc.stop(t + 0.07);
+  osc.stop(t + 0.1);
   cleanupOnEnded(osc, [chain.gain]);
 }
 
@@ -463,17 +463,17 @@ async function agentSuccess(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.38);
-  const f1 = options.f0 ?? 660, f2 = options.f1 ?? 880;
-  const toneDur = 0.1, gap = 0.06;
+  const peak = clamp01(options.peak, 0.36);
+  const f1 = options.f0 ?? 523.25, f2 = options.f1 ?? 659.25;
+  const toneDur = 0.13, gap = 0.07;
   const playTone = (startTime, freq) => {
     const osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.setValueAtTime(freq, startTime);
-    const chain = agentChain(ctx, out, startTime, { peak, decaySec: toneDur });
+    const chain = agentChain(ctx, out, startTime, { peak, decaySec: toneDur + 0.02 });
     osc.connect(chain.filter);
     osc.start(startTime);
-    osc.stop(startTime + toneDur + 0.01);
+    osc.stop(startTime + toneDur + 0.02);
     cleanupOnEnded(osc, [chain.gain]);
   };
   playTone(t, f1);
