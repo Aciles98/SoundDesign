@@ -561,17 +561,277 @@ const agent = {
   playStartup: agentStartup,
 };
 
+// Woods collection (forest: wood chop – crispy punch + warm moist body).
+function woodsChopTransient(ctx, out, t, peak = 0.35) {
+  const bufSec = 0.012;
+  const decaySec = 0.018;
+  const buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * bufSec)), ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / 40);
+  }
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 1400;
+  filter.Q.value = 0.5;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(clamp01(peak), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + decaySec);
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(out);
+  source.start(t);
+  source.stop(t + bufSec + 0.005);
+  cleanupOnEnded(source, [filter, gain]);
+}
+
+function woodsMoistTail(ctx, out, t, peak = 0.1) {
+  const bufSec = 0.048;
+  const decaySec = 0.07;
+  const buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * bufSec)), ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / 180);
+  }
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 520;
+  filter.Q.value = 0.6;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.001, t);
+  gain.gain.linearRampToValueAtTime(clamp01(peak), t + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + decaySec);
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(out);
+  source.start(t);
+  source.stop(t + bufSec + 0.01);
+  cleanupOnEnded(source, [filter, gain]);
+}
+
+async function woodsClick(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.3);
+  woodsChopTransient(ctx, out, t, peak * 1.1);
+  woodsMoistTail(ctx, out, t + 0.006, peak * 0.32);
+  const osc = ctx.createOscillator();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(options.freq ?? 195, t);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(peak, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.082);
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + 0.09);
+  cleanupOnEnded(osc, [gain]);
+}
+async function woodsTick(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.26);
+  woodsChopTransient(ctx, out, t, peak * 1.05);
+  woodsMoistTail(ctx, out, t + 0.005, peak * 0.28);
+  const osc = ctx.createOscillator();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(options.freq ?? 245, t);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(peak, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.068);
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + 0.075);
+  cleanupOnEnded(osc, [gain]);
+}
+async function woodsPop(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.3);
+  woodsChopTransient(ctx, out, t, peak * 1.15);
+  woodsMoistTail(ctx, out, t + 0.008, peak * 0.35);
+  const osc = ctx.createOscillator();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(options.f0 ?? 380, t);
+  osc.frequency.exponentialRampToValueAtTime(options.f1 ?? 140, t + 0.07);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(peak, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + 0.14);
+  cleanupOnEnded(osc, [gain]);
+}
+async function woodsToggle(isOn, options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.28);
+  woodsChopTransient(ctx, out, t, peak * 1.05);
+  woodsMoistTail(ctx, out, t + 0.006, peak * 0.3);
+  const osc = ctx.createOscillator();
+  osc.type = "triangle";
+  const up = Boolean(isOn);
+  osc.frequency.setValueAtTime(up ? 165 : 220, t);
+  osc.frequency.exponentialRampToValueAtTime(up ? 280 : 155, t + 0.065);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(peak, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + 0.13);
+  cleanupOnEnded(osc, [gain]);
+}
+async function woodsDrop(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.28);
+  woodsChopTransient(ctx, out, t, peak * 1.1);
+  woodsMoistTail(ctx, out, t + 0.008, peak * 0.34);
+  const osc = ctx.createOscillator();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(options.f0 ?? 260, t);
+  osc.frequency.exponentialRampToValueAtTime(options.f1 ?? 98, t + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(165, t + 0.16);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(peak, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + 0.25);
+  cleanupOnEnded(osc, [gain]);
+}
+async function woodsSuccess(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.28);
+  const f1 = options.f0 ?? 330, f2 = options.f1 ?? 440;
+  const toneDur = 0.095, gap = 0.05;
+  const playTone = (startTime, freq) => {
+    woodsChopTransient(ctx, out, startTime, peak * 0.9);
+    woodsMoistTail(ctx, out, startTime + 0.006, peak * 0.26);
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, startTime);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(peak, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + toneDur);
+    osc.connect(gain);
+    gain.connect(out);
+    osc.start(startTime);
+    osc.stop(startTime + toneDur + 0.01);
+    cleanupOnEnded(osc, [gain]);
+  };
+  playTone(t, f1);
+  playTone(t + gap, f2);
+}
+async function woodsError(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.3);
+  const f1 = options.f0 ?? 185, f2 = options.f1 ?? 145;
+  const toneDur = 0.08, gap = 0.04;
+  const playTone = (startTime, freq) => {
+    woodsChopTransient(ctx, out, startTime, peak * 1.05);
+    woodsMoistTail(ctx, out, startTime + 0.006, peak * 0.28);
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, startTime);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(peak, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + toneDur);
+    osc.connect(gain);
+    gain.connect(out);
+    osc.start(startTime);
+    osc.stop(startTime + toneDur + 0.01);
+    cleanupOnEnded(osc, [gain]);
+  };
+  playTone(t, f1);
+  playTone(t + gap, f2);
+}
+async function woodsWarning(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.28);
+  const freq = options.freq ?? 220, beepDur = 0.07, gap = 0.08;
+  const playBeep = (startTime) => {
+    woodsChopTransient(ctx, out, startTime, peak);
+    woodsMoistTail(ctx, out, startTime + 0.006, peak * 0.28);
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, startTime);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(peak, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + beepDur);
+    osc.connect(gain);
+    gain.connect(out);
+    osc.start(startTime);
+    osc.stop(startTime + beepDur + 0.01);
+    cleanupOnEnded(osc, [gain]);
+  };
+  playBeep(t);
+  playBeep(t + gap);
+}
+async function woodsStartup(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const peak = clamp01(options.peak, 0.28);
+  woodsChopTransient(ctx, out, t, peak * 1.2);
+  woodsMoistTail(ctx, out, t + 0.008, peak * 0.38);
+  const osc = ctx.createOscillator();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(options.freq ?? 180, t);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(peak, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + 0.22);
+  cleanupOnEnded(osc, [gain]);
+}
+
+const woods = {
+  playClick: woodsClick,
+  playTick: woodsTick,
+  playPop: woodsPop,
+  playToggle: woodsToggle,
+  playDropPressed: woodsDrop,
+  playSuccess: woodsSuccess,
+  playError: woodsError,
+  playWarning: woodsWarning,
+  playStartup: woodsStartup,
+};
+
 let currentCollection = pingPong;
 
 export function setCollection(name) {
   if (name === "Glass") currentCollection = glass;
   else if (name === "Agent") currentCollection = agent;
+  else if (name === "Woods") currentCollection = woods;
   else currentCollection = pingPong;
 }
 
 export function getCurrentCollectionName() {
   if (currentCollection === glass) return "Glass";
   if (currentCollection === agent) return "Agent";
+  if (currentCollection === woods) return "Woods";
   return "Bubble";
 }
 
