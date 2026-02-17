@@ -106,6 +106,11 @@
       .sound-lab-card {
         margin-bottom: 32px;
       }
+      .mode-switch-section {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 32px;
+      }
       h1 {
         margin: 0;
         font-family: "Inter", system-ui, sans-serif;
@@ -118,6 +123,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        gap: 12px;
       }
       .switch {
         width: 40px;
@@ -243,6 +249,16 @@
         align-self: center;
         margin-block: auto;
       }
+      .right-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+      }
+      .right-panel .pad-section[hidden] {
+        display: none;
+      }
       .pad-section {
         display: grid;
         gap: 12px;
@@ -336,132 +352,99 @@
       input[type="range"] {
         width: 100px;
       }
-      .volume-slider-wrap {
-        --slider-fill: #22c55e;
-        --slider-track: #e5e7eb;
-        --default-transition-duration: 0.15s;
+      .controls-bar {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
-        width: 100%;
-        max-width: 28rem;
-        margin: 0 auto;
-        min-height: 28px;
-        border-radius: 100%;
+        gap: 12px;
       }
-      [data-theme="dark"] .volume-slider-wrap {
-        --slider-track: #3f3f46;
+      .segmented-control {
+        display: inline-flex;
+        background: hsl(240, 4.76%, 95.88%);
+        border-radius: 12px;
+        padding: 2px;
       }
-      .volume-slider-wrap .volume-icon {
-        width: 1.5rem;
-        height: 1.5rem;
-        flex-shrink: 0;
-        color: var(--default-700);
+      .segmented-option {
+        padding: 4px 12px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        background: transparent;
+        color: hsl(240, 3.83%, 46.08%);
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
       }
-      .volume-slider-inner {
-        flex: 1;
-        min-width: 0;
-        position: relative;
-        height: 28px;
+      .segmented-option:hover {
+        color: hsl(240, 3.83%, 30%);
       }
-      .volume-slider-track {
-        position: absolute;
-        inset: 0;
-        height: 28px;
-        border-radius: 14px;
-        background: var(--slider-track);
-      }
-      .volume-slider-fill {
-        
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 28px;
-        width: var(--slider-pct, 40%);
-        margin-right: 8px;
-        background: var(--slider-fill);
-        border-radius: 14px;
-      }
-      .volume-slider-thumb {
-      min-width: 32px;
-        position: absolute;
-        left: calc(var(--slider-pct, 40%) - 16px);
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 32px;
-        height: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
-        z-index: 2;
-      }
-      .volume-slider-thumb-ball {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
+      .segmented-option[aria-selected="true"] {
         background: #fff;
-        box-shadow: 0px 0px 5px 0px #00000005, 0px 2px 10px 0px #0000000f, 0px 0px 1px 0px #0000004d;
-        transition: transform var(--default-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+        color: #000;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
       }
-      .volume-slider-wrap.thumb-hover .volume-slider-thumb-ball,
-      .volume-slider-wrap.thumb-active .volume-slider-thumb-ball {
-        transform: scale(0.8);
+      .playground-panel .playground-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
       }
-      .volume-slider-wrap .volume-slider {
-        position: absolute;
-        inset: 0;
+      .playground-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .playground-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+      .waveform-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .waveform-option {
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 12px;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .waveform-option:hover {
+        background: var(--content2);
+      }
+      .waveform-option.active {
+        border-color: var(--accent);
+        background: var(--accent-dim);
+        color: var(--accent);
+      }
+      .playground-slider {
         width: 100%;
-        height: 28px;
-        margin: 0;
+        max-width: 200px;
+        height: 6px;
         -webkit-appearance: none;
         appearance: none;
-        background: transparent;
-        z-index: 1;
+        background: var(--content3);
+        border-radius: 3px;
       }
-      .volume-slider-wrap .volume-slider:focus {
-        outline: none;
-      }
-      .volume-slider-wrap .volume-slider::-webkit-slider-runnable-track {
-        height: 28px;
-        background: transparent;
-      }
-      .volume-slider-wrap .volume-slider::-webkit-slider-thumb {
+      .playground-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
-        appearance: none;
-        width: 28px;
-        height: 28px;
-        margin-top: 0;
-        border-radius: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent);
         cursor: pointer;
       }
-      .volume-slider-wrap .volume-slider::-moz-range-track {
-        height: 28px;
-        background: transparent;
-      }
-      .volume-slider-wrap .volume-slider::-moz-range-thumb {
-        width: 28px;
-        height: 28px;
-        border-radius: 0;
-        background: transparent;
+      .playground-slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent);
         cursor: pointer;
         border: none;
-        box-shadow: none;
-      }
-      /* iOS Safari: hide native range thumb (transparent square with shadow) */
-      @supports (-webkit-touch-callout: none) {
-        .volume-slider-wrap .volume-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          background: transparent;
-          border: 0;
-          box-shadow: none;
-          color: transparent;
-        }
       }
       .footer {
         font-size: 12px;
@@ -548,42 +531,54 @@
 
         <div class="pickers-divider" aria-hidden="true"></div>
 
-        <section class="pad-section" id="sectionConcepts">
-          <div class="pad-grid">
-            <button type="button" class="pad" id="btnBubble" data-collection="Bubble" aria-pressed="true"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M132,24A100.11,100.11,0,0,0,32,124v84a16,16,0,0,0,16,16h84a100,100,0,0,0,0-200Zm0,184H48V124a84,84,0,1,1,84,84Z"/></svg>Bubble</button>
-            <button type="button" class="pad" id="btnGlass" data-collection="Glass" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M200,75.64V40a16,16,0,0,0-16-16H72A16,16,0,0,0,56,40V76a16.07,16.07,0,0,0,6.4,12.8L114.67,128,62.4,167.2A16.07,16.07,0,0,0,56,180v36a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V180.36a16.09,16.09,0,0,0-6.35-12.77L141.27,128l52.38-39.6A16.05,16.05,0,0,0,200,75.64ZM184,216H72V180l56-42,56,42.35Zm0-140.36L128,118,72,76V40H184Z"/></svg>Glass</button>
-            <button type="button" class="pad" id="btnAgent" data-collection="Agent" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></svg>Agent</button>
-            <button type="button" class="pad" id="btnWoods" data-collection="Woods" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M198.1,62.59a76,76,0,0,0-140.2,0A71.71,71.71,0,0,0,16,127.8C15.9,166,48,199,86.14,200A72.09,72.09,0,0,0,120,192.47V232a8,8,0,0,0,16,0V192.47A72.17,72.17,0,0,0,168,200l1.82,0C208,199,240.11,166,240,127.8A71.71,71.71,0,0,0,198.1,62.59ZM169.45,184a56.08,56.08,0,0,1-33.45-10v-41l43.58-21.78a8,8,0,1,0-7.16-14.32L136,115.06V88a8,8,0,0,0-16,0v51.06L83.58,120.84a8,8,0,1,0-7.16,14.32L120,156.94v17a56,56,0,0,1-33.45,10C56.9,183.23,31.92,157.52,32,127.84A55.77,55.77,0,0,1,67.11,76a8,8,0,0,0,4.53-4.67,60,60,0,0,1,112.72,0A8,8,0,0,0,188.89,76,55.79,55.79,0,0,1,224,127.84C224.08,157.52,199.1,183.23,169.45,184Z"/></svg>Woods</button>
-            <button type="button" class="pad" disabled aria-hidden="true"></button>
-            <button type="button" class="pad" disabled aria-hidden="true"></button>
-            <button type="button" class="pad" disabled aria-hidden="true"></button>
-            <button type="button" class="pad" disabled aria-hidden="true"></button>
-            <button type="button" class="pad" disabled aria-hidden="true"></button>
-          </div>
-          <h3 class="pad-section-title" id="collectionTitle">Bubble</h3>
-        </section>
+        <div class="right-panel">
+          <!-- Library: selector de colecciones (Bubble, Glass, Agent, Woods). Solo visible en Library. -->
+          <section class="pad-section" id="sectionConcepts" data-panel="library">
+            <div class="pad-grid">
+              <button type="button" class="pad" id="btnBubble" data-collection="Bubble" aria-pressed="true"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M132,24A100.11,100.11,0,0,0,32,124v84a16,16,0,0,0,16,16h84a100,100,0,0,0,0-200Zm0,184H48V124a84,84,0,1,1,84,84Z"/></svg>Bubble</button>
+              <button type="button" class="pad" id="btnGlass" data-collection="Glass" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M200,75.64V40a16,16,0,0,0-16-16H72A16,16,0,0,0,56,40V76a16.07,16.07,0,0,0,6.4,12.8L114.67,128,62.4,167.2A16.07,16.07,0,0,0,56,180v36a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V180.36a16.09,16.09,0,0,0-6.35-12.77L141.27,128l52.38-39.6A16.05,16.05,0,0,0,200,75.64ZM184,216H72V180l56-42,56,42.35Zm0-140.36L128,118,72,76V40H184Z"/></svg>Glass</button>
+              <button type="button" class="pad" id="btnAgent" data-collection="Agent" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></svg>Agent</button>
+              <button type="button" class="pad" id="btnWoods" data-collection="Woods" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M198.1,62.59a76,76,0,0,0-140.2,0A71.71,71.71,0,0,0,16,127.8C15.9,166,48,199,86.14,200A72.09,72.09,0,0,0,120,192.47V232a8,8,0,0,0,16,0V192.47A72.17,72.17,0,0,0,168,200l1.82,0C208,199,240.11,166,240,127.8A71.71,71.71,0,0,0,198.1,62.59ZM169.45,184a56.08,56.08,0,0,1-33.45-10v-41l43.58-21.78a8,8,0,1,0-7.16-14.32L136,115.06V88a8,8,0,0,0-16,0v51.06L83.58,120.84a8,8,0,1,0-7.16,14.32L120,156.94v17a56,56,0,0,1-33.45,10C56.9,183.23,31.92,157.52,32,127.84A55.77,55.77,0,0,1,67.11,76a8,8,0,0,0,4.53-4.67,60,60,0,0,1,112.72,0A8,8,0,0,0,188.89,76,55.79,55.79,0,0,1,224,127.84C224.08,157.52,199.1,183.23,169.45,184Z"/></svg>Woods</button>
+              <button type="button" class="pad" disabled aria-hidden="true"></button>
+              <button type="button" class="pad" disabled aria-hidden="true"></button>
+              <button type="button" class="pad" disabled aria-hidden="true"></button>
+              <button type="button" class="pad" disabled aria-hidden="true"></button>
+              <button type="button" class="pad" disabled aria-hidden="true"></button>
+            </div>
+            <h3 class="pad-section-title" id="collectionTitle">Bubble</h3>
+          </section>
+
+          <!-- Playground: waveform + Attack + Decay. Solo visible en Playground; no colecciones. -->
+          <section class="pad-section playground-panel" id="sectionPlayground" data-panel="playground" hidden>
+            <div class="playground-controls">
+              <div class="playground-field">
+                <span class="playground-label">Waveform</span>
+                <div class="waveform-selector" role="group" aria-label="Waveform">
+                  <button type="button" class="waveform-option active" data-waveform="sine">Sine</button>
+                  <button type="button" class="waveform-option" data-waveform="triangle">Triangle</button>
+                  <button type="button" class="waveform-option" data-waveform="square">Square</button>
+                  <button type="button" class="waveform-option" data-waveform="sawtooth">Sawtooth</button>
+                </div>
+              </div>
+              <div class="playground-field">
+                <label class="playground-label" for="playgroundAttack">Attack <span id="attackValue">0.02</span> s</label>
+                <input type="range" id="playgroundAttack" class="playground-slider" min="1" max="200" value="20" aria-label="Attack" />
+              </div>
+              <div class="playground-field">
+                <label class="playground-label" for="playgroundDecay">Decay <span id="decayValue">0.12</span> s</label>
+                <input type="range" id="playgroundDecay" class="playground-slider" min="10" max="500" value="120" aria-label="Decay" />
+              </div>
+            </div>
+          </section>
+        </div>
         </div>
       </div>
 
-      <section class="volume-slider-wrap" aria-label="Volumen">
-        <svg class="volume-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" focusable="false">
-          <path d="M19.3284 16.7503C19.1684 16.7503 19.0184 16.7003 18.8784 16.6003C18.5484 16.3503 18.4784 15.8803 18.7284 15.5503C20.2984 13.4603 20.2984 10.5403 18.7284 8.45027C18.4784 8.12027 18.5484 7.65027 18.8784 7.40027C19.2084 7.15027 19.6784 7.22027 19.9284 7.55027C21.8984 10.1703 21.8984 13.8303 19.9284 16.4503C19.7884 16.6503 19.5584 16.7503 19.3284 16.7503Z" fill="currentColor"/>
-          <path d="M15.3481 3.78168C14.2281 3.16168 12.7981 3.32168 11.3381 4.23168L8.41813 6.06168C8.21813 6.18168 7.98813 6.25168 7.75813 6.25168H6.82812H6.32812C3.90812 6.25168 2.57812 7.58168 2.57812 10.0017V14.0017C2.57812 16.4217 3.90812 17.7517 6.32812 17.7517H6.82812H7.75813C7.98813 17.7517 8.21813 17.8217 8.41813 17.9417L11.3381 19.7717C12.2181 20.3217 13.0781 20.5917 13.8781 20.5917C14.3981 20.5917 14.8981 20.4717 15.3481 20.2217C16.4581 19.6017 17.0781 18.3117 17.0781 16.5917V7.41168C17.0781 5.69168 16.4581 4.40168 15.3481 3.78168Z" fill="currentColor"/>
-        </svg>
-        <div class="volume-slider-inner">
-          <div class="volume-slider-track" aria-hidden="true" data-slot="track">
-            <div class="volume-slider-fill" data-slot="filler"></div>
-            <div class="volume-slider-thumb" id="volumeSliderThumb" aria-hidden="true" data-slot="thumb">
-              <div class="volume-slider-thumb-ball"></div>
-            </div>
-          </div>
-          <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="40" aria-label="Volumen" />
+      <section class="mode-switch-section" aria-label="Library or Playground">
+        <div class="segmented-control" role="tablist" aria-label="Library or Playground">
+          <button type="button" class="segmented-option" id="modeLibrary" role="tab" aria-selected="true" data-mode="library">Library</button>
+          <button type="button" class="segmented-option" id="modePlayground" role="tab" aria-selected="false" data-mode="playground">Playground</button>
         </div>
-        <svg class="volume-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" focusable="false">
-          <path d="M18.0003 16.7503C17.8403 16.7503 17.6903 16.7003 17.5503 16.6003C17.2203 16.3503 17.1503 15.8803 17.4003 15.5503C18.9703 13.4603 18.9703 10.5403 17.4003 8.45027C17.1503 8.12027 17.2203 7.65027 17.5503 7.40027C17.8803 7.15027 18.3503 7.22027 18.6003 7.55027C20.5603 10.1703 20.5603 13.8303 18.6003 16.4503C18.4503 16.6503 18.2303 16.7503 18.0003 16.7503Z" fill="currentColor"/>
-          <path d="M19.8284 19.2503C19.6684 19.2503 19.5184 19.2003 19.3784 19.1003C19.0484 18.8503 18.9784 18.3803 19.2284 18.0503C21.8984 14.4903 21.8984 9.51027 19.2284 5.95027C18.9784 5.62027 19.0484 5.15027 19.3784 4.90027C19.7084 4.65027 20.1784 4.72027 20.4284 5.05027C23.4984 9.14027 23.4984 14.8603 20.4284 18.9503C20.2884 19.1503 20.0584 19.2503 19.8284 19.2503Z" fill="currentColor"/>
-          <path d="M14.02 3.78168C12.9 3.16168 11.47 3.32168 10.01 4.23168L7.09 6.06168C6.89 6.18168 6.66 6.25168 6.43 6.25168H5.5H5C2.58 6.25168 1.25 7.58168 1.25 10.0017V14.0017C1.25 16.4217 2.58 17.7517 5 17.7517H5.5H6.43C6.66 17.7517 6.89 17.8217 7.09 17.9417L10.01 19.7717C10.89 20.3217 11.75 20.5917 12.55 20.5917C13.07 20.5917 13.57 20.4717 14.02 20.2217C15.13 19.6017 15.75 18.3117 15.75 16.5917V7.41168C15.75 5.69168 15.13 4.40168 14.02 3.78168Z" fill="currentColor"/>
-        </svg>
       </section>
 
     </div>
@@ -620,49 +615,86 @@
         playError,
         playWarning,
         playStartup,
+        playPlaygroundTone,
+        playPlaygroundDoubleTone,
       } from "./audio/sounds.js";
+
+      setMasterVolume(1);
 
       const soundEnabledEl = document.getElementById("soundEnabled");
       const activeSoundIcon = document.getElementById("activeSoundIcon");
       const activeSoundLabel = document.getElementById("activeSoundLabel");
       const sectionClick = document.getElementById("sectionClick");
       const sectionConcepts = document.getElementById("sectionConcepts");
-      const volumeSliderEl = document.getElementById("volumeSlider");
+      const sectionPlayground = document.getElementById("sectionPlayground");
 
-      if (volumeSliderEl) {
-        var wrap = volumeSliderEl.closest(".volume-slider-wrap");
-        var inner = document.querySelector(".volume-slider-inner");
-        var thumbEl = document.getElementById("volumeSliderThumb");
-        function updateSliderUI() {
-          if (wrap) wrap.style.setProperty("--slider-pct", volumeSliderEl.value + "%");
-        }
-        function addThumbActive() {
-          if (wrap) wrap.classList.add("thumb-active");
-        }
-        function removeThumbActive() {
-          if (wrap) wrap.classList.remove("thumb-active");
-        }
-        updateSliderUI();
-        setMasterVolume(Number(volumeSliderEl.value) / 100);
-        volumeSliderEl.addEventListener("input", function () {
-          updateSliderUI();
-          setMasterVolume(Number(volumeSliderEl.value) / 100);
+      let appMode = "library";
+      let playgroundWaveform = "sine";
+      let playgroundAttackSec = 0.02;
+      let playgroundDecaySec = 0.12;
+
+      function setMode(mode) {
+        appMode = mode;
+        document.getElementById("modeLibrary")?.setAttribute("aria-selected", mode === "library");
+        document.getElementById("modePlayground")?.setAttribute("aria-selected", mode === "playground");
+        if (sectionConcepts) sectionConcepts.hidden = mode !== "library";
+        if (sectionPlayground) sectionPlayground.hidden = mode !== "playground";
+      }
+      document.getElementById("modeLibrary")?.addEventListener("click", () => setMode("library"));
+      document.getElementById("modePlayground")?.addEventListener("click", () => setMode("playground"));
+
+      document.querySelectorAll(".waveform-option").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".waveform-option").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          playgroundWaveform = btn.getAttribute("data-waveform");
         });
-        volumeSliderEl.addEventListener("mousedown", addThumbActive);
-        volumeSliderEl.addEventListener("touchstart", addThumbActive, { passive: true });
-        volumeSliderEl.addEventListener("mouseup", removeThumbActive);
-        volumeSliderEl.addEventListener("mouseleave", removeThumbActive);
-        volumeSliderEl.addEventListener("touchend", removeThumbActive);
-        volumeSliderEl.addEventListener("touchcancel", removeThumbActive);
-        if (inner && wrap) {
-          inner.addEventListener("mousemove", function (e) {
-            var pct = Number(volumeSliderEl.value) / 100;
-            var thumbCenterX = inner.getBoundingClientRect().left + pct * inner.offsetWidth - 4;
-            if (Math.abs(e.clientX - thumbCenterX) <= 14) wrap.classList.add("thumb-hover");
-            else wrap.classList.remove("thumb-hover");
-          });
-          inner.addEventListener("mouseleave", function () { wrap.classList.remove("thumb-hover"); });
+      });
+      const attackSlider = document.getElementById("playgroundAttack");
+      const decaySlider = document.getElementById("playgroundDecay");
+      const attackValueEl = document.getElementById("attackValue");
+      const decayValueEl = document.getElementById("decayValue");
+      function updatePlaygroundSliders() {
+        playgroundAttackSec = (attackSlider?.value ?? 20) / 1000;
+        playgroundDecaySec = (decaySlider?.value ?? 120) / 1000;
+        if (attackValueEl) attackValueEl.textContent = playgroundAttackSec.toFixed(2);
+        if (decayValueEl) decayValueEl.textContent = playgroundDecaySec.toFixed(2);
+      }
+      attackSlider?.addEventListener("input", updatePlaygroundSliders);
+      decaySlider?.addEventListener("input", updatePlaygroundSliders);
+      updatePlaygroundSliders();
+
+      function playPlaygroundForPad(padId) {
+        const opts = { type: playgroundWaveform, attackSec: playgroundAttackSec, decaySec: playgroundDecaySec, peak: 0.26 };
+        // Success: dos tonos ascendentes (como Library)
+        if (padId === "btnSuccess") {
+          playPlaygroundDoubleTone({ ...opts, freq1: 523.25, freq2: 659.25, gapSec: 0.06 });
+          return;
         }
+        // Error: dos tonos descendentes
+        if (padId === "btnError") {
+          playPlaygroundDoubleTone({ ...opts, freq1: 494, freq2: 370, gapSec: 0.06 });
+          return;
+        }
+        // Warning: dos beeps iguales
+        if (padId === "btnWarning") {
+          playPlaygroundDoubleTone({ ...opts, freq1: 520, freq2: 520, gapSec: 0.06 });
+          return;
+        }
+        // Startup: barrido 280 → 640 (un solo tono con sweep)
+        if (padId === "btnStartup") {
+          playPlaygroundTone({ ...opts, freq: 280, freq2: 640 });
+          return;
+        }
+        // Click, Tick: un tono; Pop, Drop: sweep
+        const singleMap = {
+          btnClick: { freq: 440 },
+          btnPop: { freq: 520, freq2: 200 },
+          btnTick: { freq: 380 },
+          btnDrop: { freq: 350, freq2: 150 },
+        };
+        const spec = singleMap[padId] || { freq: 440 };
+        playPlaygroundTone({ ...opts, ...spec });
       }
 
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -789,8 +821,11 @@
         const el = document.getElementById(id);
         if (!el) return;
         el.addEventListener("click", () => {
-          if (soundEnabled) fn();
-          togglePadSelection(el, () => fn(), label);
+          if (soundEnabled) {
+            if (appMode === "playground") playPlaygroundForPad(id);
+            else fn();
+          }
+          togglePadSelection(el, () => appMode === "playground" ? playPlaygroundForPad(id) : fn(), label);
         });
       });
 
@@ -814,10 +849,23 @@
           toggleBtn.setAttribute("aria-pressed", toggleState);
           if (toggleLabelEl) toggleLabelEl.textContent = toggleState ? "Toggle On" : "Toggle Off";
           updateToggleIcon();
-          if (soundEnabled) playToggle(toggleState);
+          if (soundEnabled) {
+            if (appMode === "playground") {
+              playPlaygroundTone({
+                type: playgroundWaveform,
+                attackSec: playgroundAttackSec,
+                decaySec: playgroundDecaySec,
+                freq: toggleState ? 400 : 280,
+                peak: 0.26,
+              });
+            } else playToggle(toggleState);
+          }
           togglePadSelection(
             toggleBtn,
-            async () => { await playToggle(toggleState); },
+            async () => {
+              if (appMode === "playground") playPlaygroundTone({ type: playgroundWaveform, attackSec: playgroundAttackSec, decaySec: playgroundDecaySec, freq: toggleState ? 400 : 280, peak: 0.26 });
+              else await playToggle(toggleState);
+            },
             "Toggle"
           );
         });
@@ -832,8 +880,11 @@
         const el = document.getElementById(id);
         if (!el) return;
         el.addEventListener("click", () => {
-          if (soundEnabled) fn();
-          togglePadSelection(el, () => fn(), label);
+          if (soundEnabled) {
+            if (appMode === "playground") playPlaygroundTone({ type: playgroundWaveform, attackSec: playgroundAttackSec, decaySec: playgroundDecaySec, freq: id === "btnSine" ? 440 : id === "btnTriangle" ? 550 : 660, peak: 0.22 });
+            else fn();
+          }
+          togglePadSelection(el, () => appMode === "playground" ? playPlaygroundTone({ type: playgroundWaveform, attackSec: playgroundAttackSec, decaySec: playgroundDecaySec, freq: id === "btnSine" ? 440 : id === "btnTriangle" ? 550 : 660, peak: 0.22 }) : fn(), label);
         });
       });
 
@@ -857,7 +908,6 @@
         });
       }
 
-      setMasterVolume(1);
       renderMeta();
       window.__ctx = getAudioContext;
     </script>

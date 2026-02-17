@@ -829,6 +829,69 @@ export async function playSawtooth(options = {}) {
   playOscillatorTone(ctx, getMasterGain(), ctx.currentTime, { type: "sawtooth", freq: options.freq ?? 440, durationSec: 0.15, peak: options.peak ?? 0.12 });
 }
 
+/** Playground: one tone (or sweep) with configurable waveform, attack and decay. */
+export async function playPlaygroundTone(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const type = options.type ?? "sine";
+  const freq = options.freq ?? 440;
+  const freq2 = options.freq2;
+  const attackSec = Math.max(0.001, options.attackSec ?? 0.02);
+  const decaySec = Math.max(0.01, options.decaySec ?? 0.12);
+  const peak = clamp01(options.peak ?? 0.26);
+  const totalSec = attackSec + decaySec;
+
+  const osc = ctx.createOscillator();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t);
+  if (freq2 != null) osc.frequency.exponentialRampToValueAtTime(freq2, t + totalSec * 0.6);
+
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.001, t);
+  gain.gain.linearRampToValueAtTime(peak, t + attackSec);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + totalSec);
+
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + totalSec + 0.01);
+  cleanupOnEnded(osc, [gain]);
+}
+
+/** Playground: two separate tones (e.g. Success = up, Error = down, Warning = two beeps). */
+export async function playPlaygroundDoubleTone(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const type = options.type ?? "sine";
+  const freq1 = options.freq1 ?? 440;
+  const freq2 = options.freq2 ?? 440;
+  const gapSec = Math.max(0, options.gapSec ?? 0.06);
+  const attackSec = Math.max(0.001, options.attackSec ?? 0.02);
+  const decaySec = Math.max(0.01, options.decaySec ?? 0.12);
+  const toneDur = attackSec + decaySec;
+  const peak = clamp01(options.peak ?? 0.26);
+
+  const playOne = (startTime, freq) => {
+    const osc = ctx.createOscillator();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, startTime);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.001, startTime);
+    gain.gain.linearRampToValueAtTime(peak, startTime + attackSec);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + toneDur);
+    osc.connect(gain);
+    gain.connect(out);
+    osc.start(startTime);
+    osc.stop(startTime + toneDur + 0.01);
+    cleanupOnEnded(osc, [gain]);
+  };
+
+  playOne(t, freq1);
+  playOne(t + gapSec, freq2);
+}
+
 // Soft noise burst: louder, longer exponential tail so it doesn’t cut off.
 export async function playNoise(options = {}) {
   const ctx = await ensureResumed();
