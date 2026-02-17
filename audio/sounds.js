@@ -147,7 +147,7 @@ async function pingPongWarning(options = {}) {
   const out = getMasterGain();
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.26);
-  const freq = options.freq ?? 520, beepDur = 0.08, gap = 0.12;
+  const freq = options.freq ?? 520, beepDur = 0.1, gap = 0.06;
   const playBeep = (startTime) => {
     const osc = ctx.createOscillator();
     osc.type = "sine";
@@ -275,7 +275,7 @@ async function glassSuccess(options = {}) {
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.3);
   const f1 = options.f0 ?? 1318.5, f2 = options.f1 ?? 1760;
-  const toneDur = 0.055, gap = 0.032;
+  const toneDur = 0.065, gap = 0.04;
   const playTone = (startTime, freq) => {
     const osc = ctx.createOscillator();
     osc.type = "triangle";
@@ -320,7 +320,7 @@ async function glassWarning(options = {}) {
   const out = getMasterGain();
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.3);
-  const freq = options.freq ?? 640, beepDur = 0.055, gap = 0.08;
+  const freq = options.freq ?? 640, beepDur = 0.065, gap = 0.04;
   const playBeep = (startTime) => {
     const osc = ctx.createOscillator();
     osc.type = "triangle";
@@ -465,7 +465,7 @@ async function agentSuccess(options = {}) {
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.36);
   const f1 = options.f0 ?? 523.25, f2 = options.f1 ?? 659.25;
-  const toneDur = 0.13, gap = 0.07;
+  const toneDur = 0.115, gap = 0.07;
   const playTone = (startTime, freq) => {
     const osc = ctx.createOscillator();
     osc.type = "sine";
@@ -486,7 +486,7 @@ async function agentError(options = {}) {
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.38);
   const f1 = options.f0 ?? 580, f2 = options.f1 ?? 440;
-  const toneDur = 0.1, gap = 0.06;
+  const toneDur = 0.115, gap = 0.07;
   const playTone = (startTime, freq) => {
     const osc = ctx.createOscillator();
     osc.type = "sine";
@@ -507,7 +507,7 @@ async function agentWarning(options = {}) {
   const t = ctx.currentTime;
   const peak = clamp01(options.peak, 0.38);
   const freq = options.freq ?? 640;
-  const beepDur = 0.09, gap = 0.12;
+  const beepDur = 0.115, gap = 0.07;
   const playBeep = (startTime) => {
     const osc = ctx.createOscillator();
     osc.type = "sine";
@@ -561,170 +561,102 @@ const agent = {
   playStartup: agentStartup,
 };
 
-// Woods collection (forest: wood chop – crispy punch + warm moist body).
-function woodsChopTransient(ctx, out, t, peak = 0.35) {
-  const bufSec = 0.012;
-  const decaySec = 0.018;
-  const buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * bufSec)), ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < data.length; i++) {
-    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / 40);
-  }
-  const source = ctx.createBufferSource();
-  source.buffer = buffer;
-  const filter = ctx.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.value = 1400;
-  filter.Q.value = 0.5;
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(clamp01(peak), t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + decaySec);
-  source.connect(filter);
-  filter.connect(gain);
-  gain.connect(out);
-  source.start(t);
-  source.stop(t + bufSec + 0.005);
-  cleanupOnEnded(source, [filter, gain]);
-}
-
-function woodsMoistTail(ctx, out, t, peak = 0.1) {
-  const bufSec = 0.048;
-  const decaySec = 0.07;
-  const buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * bufSec)), ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < data.length; i++) {
-    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / 180);
-  }
-  const source = ctx.createBufferSource();
-  source.buffer = buffer;
-  const filter = ctx.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.value = 520;
-  filter.Q.value = 0.6;
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(0.001, t);
-  gain.gain.linearRampToValueAtTime(clamp01(peak), t + 0.008);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + decaySec);
-  source.connect(filter);
-  filter.connect(gain);
-  gain.connect(out);
-  source.start(t);
-  source.stop(t + bufSec + 0.01);
-  cleanupOnEnded(source, [filter, gain]);
-}
-
+// Woods collection: misma estructura y duración que Bubble. Sine, frecuencias bajas (bosque), sin filtros.
 async function woodsClick(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.3);
-  woodsChopTransient(ctx, out, t, peak * 1.1);
-  woodsMoistTail(ctx, out, t + 0.006, peak * 0.32);
   const osc = ctx.createOscillator();
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(options.freq ?? 195, t);
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(options.freq ?? 200, t);
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(peak, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.082);
-  osc.connect(gain);
-  gain.connect(out);
-  osc.start(t);
-  osc.stop(t + 0.09);
-  cleanupOnEnded(osc, [gain]);
-}
-async function woodsTick(options = {}) {
-  const ctx = await ensureResumed();
-  const out = getMasterGain();
-  const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.26);
-  woodsChopTransient(ctx, out, t, peak * 1.05);
-  woodsMoistTail(ctx, out, t + 0.005, peak * 0.28);
-  const osc = ctx.createOscillator();
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(options.freq ?? 245, t);
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(peak, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.068);
+  gain.gain.setValueAtTime(clamp01(options.peak, 0.26), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.065);
   osc.connect(gain);
   gain.connect(out);
   osc.start(t);
   osc.stop(t + 0.075);
   cleanupOnEnded(osc, [gain]);
 }
+async function woodsTick(options = {}) {
+  const ctx = await ensureResumed();
+  const out = getMasterGain();
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(options.freq ?? 180, t);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(clamp01(options.peak, 0.22), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+  osc.connect(gain);
+  gain.connect(out);
+  osc.start(t);
+  osc.stop(t + 0.055);
+  cleanupOnEnded(osc, [gain]);
+}
 async function woodsPop(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.3);
-  woodsChopTransient(ctx, out, t, peak * 1.15);
-  woodsMoistTail(ctx, out, t + 0.008, peak * 0.35);
   const osc = ctx.createOscillator();
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(options.f0 ?? 380, t);
-  osc.frequency.exponentialRampToValueAtTime(options.f1 ?? 140, t + 0.07);
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(options.f0 ?? 280, t);
+  osc.frequency.exponentialRampToValueAtTime(options.f1 ?? 120, t + 0.08);
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(peak, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+  gain.gain.setValueAtTime(clamp01(options.peak, 0.26), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
   osc.connect(gain);
   gain.connect(out);
   osc.start(t);
-  osc.stop(t + 0.14);
+  osc.stop(t + 0.15);
   cleanupOnEnded(osc, [gain]);
 }
 async function woodsToggle(isOn, options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.28);
-  woodsChopTransient(ctx, out, t, peak * 1.05);
-  woodsMoistTail(ctx, out, t + 0.006, peak * 0.3);
   const osc = ctx.createOscillator();
-  osc.type = "triangle";
+  osc.type = "sine";
   const up = Boolean(isOn);
-  osc.frequency.setValueAtTime(up ? 165 : 220, t);
-  osc.frequency.exponentialRampToValueAtTime(up ? 280 : 155, t + 0.065);
+  osc.frequency.setValueAtTime(up ? 200 : 280, t);
+  osc.frequency.exponentialRampToValueAtTime(up ? 320 : 180, t + 0.07);
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(peak, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+  gain.gain.setValueAtTime(clamp01(options.peak, 0.26), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
   osc.connect(gain);
   gain.connect(out);
   osc.start(t);
-  osc.stop(t + 0.13);
+  osc.stop(t + 0.15);
   cleanupOnEnded(osc, [gain]);
 }
 async function woodsDrop(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.28);
-  woodsChopTransient(ctx, out, t, peak * 1.1);
-  woodsMoistTail(ctx, out, t + 0.008, peak * 0.34);
   const osc = ctx.createOscillator();
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(options.f0 ?? 260, t);
-  osc.frequency.exponentialRampToValueAtTime(options.f1 ?? 98, t + 0.08);
-  osc.frequency.exponentialRampToValueAtTime(165, t + 0.16);
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(options.f0 ?? 220, t);
+  osc.frequency.exponentialRampToValueAtTime(options.f1 ?? 100, t + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(180, t + 0.16);
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(peak, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+  gain.gain.setValueAtTime(clamp01(options.peak, 0.26), t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
   osc.connect(gain);
   gain.connect(out);
   osc.start(t);
-  osc.stop(t + 0.25);
+  osc.stop(t + 0.23);
   cleanupOnEnded(osc, [gain]);
 }
 async function woodsSuccess(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.28);
-  const f1 = options.f0 ?? 330, f2 = options.f1 ?? 440;
-  const toneDur = 0.095, gap = 0.05;
+  const peak = clamp01(options.peak, 0.26);
+  const f1 = options.f0 ?? 240, f2 = options.f1 ?? 300;
+  const toneDur = 0.1, gap = 0.06;
   const playTone = (startTime, freq) => {
-    woodsChopTransient(ctx, out, startTime, peak * 0.9);
-    woodsMoistTail(ctx, out, startTime + 0.006, peak * 0.26);
     const osc = ctx.createOscillator();
-    osc.type = "triangle";
+    osc.type = "sine";
     osc.frequency.setValueAtTime(freq, startTime);
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(peak, startTime);
@@ -742,14 +674,12 @@ async function woodsError(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.3);
-  const f1 = options.f0 ?? 185, f2 = options.f1 ?? 145;
-  const toneDur = 0.08, gap = 0.04;
+  const peak = clamp01(options.peak, 0.26);
+  const f1 = options.f0 ?? 220, f2 = options.f1 ?? 165;
+  const toneDur = 0.1, gap = 0.06;
   const playTone = (startTime, freq) => {
-    woodsChopTransient(ctx, out, startTime, peak * 1.05);
-    woodsMoistTail(ctx, out, startTime + 0.006, peak * 0.28);
     const osc = ctx.createOscillator();
-    osc.type = "triangle";
+    osc.type = "sine";
     osc.frequency.setValueAtTime(freq, startTime);
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(peak, startTime);
@@ -767,13 +697,11 @@ async function woodsWarning(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.28);
-  const freq = options.freq ?? 220, beepDur = 0.07, gap = 0.08;
+  const peak = clamp01(options.peak, 0.26);
+  const freq = options.freq ?? 200, beepDur = 0.1, gap = 0.06;
   const playBeep = (startTime) => {
-    woodsChopTransient(ctx, out, startTime, peak);
-    woodsMoistTail(ctx, out, startTime + 0.006, peak * 0.28);
     const osc = ctx.createOscillator();
-    osc.type = "triangle";
+    osc.type = "sine";
     osc.frequency.setValueAtTime(freq, startTime);
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(peak, startTime);
@@ -791,19 +719,20 @@ async function woodsStartup(options = {}) {
   const ctx = await ensureResumed();
   const out = getMasterGain();
   const t = ctx.currentTime;
-  const peak = clamp01(options.peak, 0.28);
-  woodsChopTransient(ctx, out, t, peak * 1.2);
-  woodsMoistTail(ctx, out, t + 0.008, peak * 0.38);
   const osc = ctx.createOscillator();
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(options.freq ?? 180, t);
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(options.f0 ?? 140, t);
+  osc.frequency.exponentialRampToValueAtTime(options.f1 ?? 380, t + 0.22);
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(peak, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+  const peak = clamp01(options.peak, 0.26);
+  const decaySec = 0.3;
+  gain.gain.setValueAtTime(0.001, t);
+  gain.gain.exponentialRampToValueAtTime(peak, t + 0.04);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + decaySec);
   osc.connect(gain);
   gain.connect(out);
   osc.start(t);
-  osc.stop(t + 0.22);
+  osc.stop(t + decaySec + 0.01);
   cleanupOnEnded(osc, [gain]);
 }
 
