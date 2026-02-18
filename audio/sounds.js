@@ -748,7 +748,7 @@ const woods = {
   playStartup: woodsStartup,
 };
 
-let currentCollection = pingPong;
+let currentCollection = agent;
 
 export function setCollection(name) {
   if (name === "Glass") currentCollection = glass;

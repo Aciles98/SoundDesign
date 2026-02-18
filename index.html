@@ -26,6 +26,16 @@
         --default-800: #656567;
         --shadow-subtle: rgba(0, 0, 0, 0.04);
         --shadow-edge: rgba(0, 0, 0, 0.05);
+        --segmented-bg: hsl(240, 4.76%, 95.88%);
+        --segmented-label: hsl(240, 3.83%, 46.08%);
+        --segmented-label-hover: hsl(240, 3.83%, 30%);
+        --segmented-active-bg: #ffffff;
+        --segmented-active-text: #000000;
+        --tw-inset-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --tw-inset-ring-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        --tw-ring-offset-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        --tw-ring-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        --tw-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
       }
       [data-theme="dark"] {
         color-scheme: dark;
@@ -47,6 +57,16 @@
         --default-800: #d9d9da;
         --shadow-subtle: rgba(255, 255, 255, 0.04);
         --shadow-edge: rgba(255, 255, 255, 0.06);
+        --segmented-bg: hsl(240, 4%, 18%);
+        --segmented-label: hsl(240, 4%, 65%);
+        --segmented-label-hover: hsl(240, 4%, 85%);
+        --segmented-active-bg: var(--panel);
+        --segmented-active-text: var(--text);
+        --tw-inset-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        --tw-inset-ring-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        --tw-ring-offset-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        --tw-ring-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        --tw-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
       }
       [data-theme="dark"] .pad {
         background: var(--content2);
@@ -360,28 +380,34 @@
       }
       .segmented-control {
         display: inline-flex;
-        background: hsl(240, 4.76%, 95.88%);
-        border-radius: 12px;
-        padding: 2px;
+        align-items: center;
+        height: 40px;
+        padding: 4px;
+        background: var(--segmented-bg);
+        border-radius: 8px;
       }
       .segmented-option {
-        padding: 4px 12px;
+        height: 32px;
+        padding: 0 12px;
         border: none;
-        border-radius: 10px;
-        font-size: 14px;
+        border-radius: 8px;
+        font-size: .875rem;
         font-weight: 500;
         background: transparent;
-        color: hsl(240, 3.83%, 46.08%);
+        color: var(--segmented-label);
         cursor: pointer;
         transition: background 0.15s, color 0.15s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
       .segmented-option:hover {
-        color: hsl(240, 3.83%, 30%);
+        color: var(--segmented-label-hover);
       }
       .segmented-option[aria-selected="true"] {
-        background: #fff;
-        color: #000;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+        background: var(--segmented-active-bg);
+        color: var(--segmented-active-text);
+        box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
       }
       .playground-panel .playground-controls {
         display: flex;
@@ -535,9 +561,9 @@
           <!-- Library: selector de colecciones (Bubble, Glass, Agent, Woods). Solo visible en Library. -->
           <section class="pad-section" id="sectionConcepts" data-panel="library">
             <div class="pad-grid">
-              <button type="button" class="pad" id="btnBubble" data-collection="Bubble" aria-pressed="true"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M132,24A100.11,100.11,0,0,0,32,124v84a16,16,0,0,0,16,16h84a100,100,0,0,0,0-200Zm0,184H48V124a84,84,0,1,1,84,84Z"/></svg>Bubble</button>
+              <button type="button" class="pad" id="btnBubble" data-collection="Bubble" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M132,24A100.11,100.11,0,0,0,32,124v84a16,16,0,0,0,16,16h84a100,100,0,0,0,0-200Zm0,184H48V124a84,84,0,1,1,84,84Z"/></svg>Bubble</button>
               <button type="button" class="pad" id="btnGlass" data-collection="Glass" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M200,75.64V40a16,16,0,0,0-16-16H72A16,16,0,0,0,56,40V76a16.07,16.07,0,0,0,6.4,12.8L114.67,128,62.4,167.2A16.07,16.07,0,0,0,56,180v36a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V180.36a16.09,16.09,0,0,0-6.35-12.77L141.27,128l52.38-39.6A16.05,16.05,0,0,0,200,75.64ZM184,216H72V180l56-42,56,42.35Zm0-140.36L128,118,72,76V40H184Z"/></svg>Glass</button>
-              <button type="button" class="pad" id="btnAgent" data-collection="Agent" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></svg>Agent</button>
+              <button type="button" class="pad" id="btnAgent" data-collection="Agent" aria-pressed="true"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></svg>Agent</button>
               <button type="button" class="pad" id="btnWoods" data-collection="Woods" aria-pressed="false"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M198.1,62.59a76,76,0,0,0-140.2,0A71.71,71.71,0,0,0,16,127.8C15.9,166,48,199,86.14,200A72.09,72.09,0,0,0,120,192.47V232a8,8,0,0,0,16,0V192.47A72.17,72.17,0,0,0,168,200l1.82,0C208,199,240.11,166,240,127.8A71.71,71.71,0,0,0,198.1,62.59ZM169.45,184a56.08,56.08,0,0,1-33.45-10v-41l43.58-21.78a8,8,0,1,0-7.16-14.32L136,115.06V88a8,8,0,0,0-16,0v51.06L83.58,120.84a8,8,0,1,0-7.16,14.32L120,156.94v17a56,56,0,0,1-33.45,10C56.9,183.23,31.92,157.52,32,127.84A55.77,55.77,0,0,1,67.11,76a8,8,0,0,0,4.53-4.67,60,60,0,0,1,112.72,0A8,8,0,0,0,188.89,76,55.79,55.79,0,0,1,224,127.84C224.08,157.52,199.1,183.23,169.45,184Z"/></svg>Woods</button>
               <button type="button" class="pad" disabled aria-hidden="true"></button>
               <button type="button" class="pad" disabled aria-hidden="true"></button>
@@ -545,7 +571,7 @@
               <button type="button" class="pad" disabled aria-hidden="true"></button>
               <button type="button" class="pad" disabled aria-hidden="true"></button>
             </div>
-            <h3 class="pad-section-title" id="collectionTitle">Bubble</h3>
+            <h3 class="pad-section-title" id="collectionTitle">Agent</h3>
           </section>
 
           <!-- Playground: waveform + Attack + Decay. Solo visible en Playground; no colecciones. -->
@@ -640,8 +666,14 @@
         if (sectionConcepts) sectionConcepts.hidden = mode !== "library";
         if (sectionPlayground) sectionPlayground.hidden = mode !== "playground";
       }
-      document.getElementById("modeLibrary")?.addEventListener("click", () => setMode("library"));
-      document.getElementById("modePlayground")?.addEventListener("click", () => setMode("playground"));
+      document.getElementById("modeLibrary")?.addEventListener("click", () => {
+        if (appMode !== "library" && soundEnabled) playPop();
+        setMode("library");
+      });
+      document.getElementById("modePlayground")?.addEventListener("click", () => {
+        if (appMode !== "playground" && soundEnabled) playPop();
+        setMode("playground");
+      });
 
       document.querySelectorAll(".waveform-option").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -802,6 +834,7 @@
           const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
           document.documentElement.setAttribute("data-theme", next);
           updateThemeSwitchLabel();
+          if (soundEnabled) playToggle(next === "dark");
         });
       }
       if (soundEnabledEl) soundEnabledEl.addEventListener("change", () => { soundEnabled = soundEnabledEl.checked; });
