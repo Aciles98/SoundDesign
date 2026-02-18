@@ -38,25 +38,12 @@ The app responds to the system theme and uses the same sounds for its own UI: th
 - **Web Audio API** — One `AudioContext`, resumed on first interaction; oscillators + gain envelopes; cleanup on stop.
 - **CSS** — Light/dark theme via `data-theme`, layout and controls in one file.
 
----
-
-## Run it
-
-From the project root:
-
-```bash
-python3 -m http.server 5173
-```
-
-Open **http://localhost:5173**, enable **Sound**, and use **Library** or **Playground** to trigger and compare sounds.
 
 ---
 
-## Export for Framer (or any design tool)
+## Export (or any design tool)
 
-1. With the server running, open **http://localhost:5173/export.html**.
 2. Download the WAVs you need (e.g. `bubble-click.wav`, `bubble-tick.wav`, `bubble-startup.wav`).
-3. In Framer: **Assets** → upload the files → add a **Play sound** action to your interaction and pick the asset.
 
 Use **Click** for buttons/links, **Tick** for checkmarks or steps, **Start** for entrances or “ready” states.
 
