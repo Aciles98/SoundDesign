@@ -5,64 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sound Lab – SoundDesign</title>
     <style>
-      /* Theme: light (design system) */
+      /* Theme: Cursor / VS Code–style palette */
       :root {
         color-scheme: light;
-        --bg: #f4f4f5;
+        --bg: #fafafa;
         --panel: #ffffff;
-        --content2: #f4f4f5;
-        --content3: #e4e4e7;
-        --content4: #d4d4d8;
-        --text: #000000;
-        --muted: #8a8a8c;
-        --accent: #006fee;
-        --accent-dim: #dfedfd;
-        --border: #e3e3e6;
-        --border-inactive: #d4d4d8;
-        --default-400: #dcdcdf;
-        --default-500: #d4d4d8;
-        --default-600: #afafb2;
-        --default-700: #8a8a8c;
-        --default-800: #656567;
+        --content2: #f3f3f3;
+        --content3: #e8e8e8;
+        --content4: #d4d4d4;
+        --text: #1e1e1e;
+        --muted: #6e6e6e;
+        --accent: #8b5cf6;
+        --accent-dim: #ede9fe;
+        --border: #e5e5e5;
+        --border-inactive: #d4d4d4;
+        --default-400: #d4d4d4;
+        --default-500: #b4b4b4;
+        --default-600: #8e8e8e;
+        --default-700: #6e6e6e;
+        --default-800: #4e4e4e;
         --shadow-subtle: rgba(0, 0, 0, 0.04);
-        --shadow-edge: rgba(0, 0, 0, 0.05);
-        --segmented-bg: hsl(240, 4.76%, 95.88%);
-        --segmented-label: hsl(240, 3.83%, 46.08%);
-        --segmented-label-hover: hsl(240, 3.83%, 30%);
+        --shadow-edge: rgba(0, 0, 0, 0.06);
+        --segmented-bg: #e8e8e8;
+        --segmented-label: #6e6e6e;
+        --segmented-label-hover: #4e4e4e;
         --segmented-active-bg: #ffffff;
-        --segmented-active-text: #000000;
+        --segmented-active-text: #1e1e1e;
         --tw-inset-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --tw-inset-ring-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        --tw-inset-ring-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
         --tw-ring-offset-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
         --tw-ring-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
         --tw-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
       }
       [data-theme="dark"] {
         color-scheme: dark;
-        --bg: #000000;
-        --panel: #18181b;
-        --content2: #27272a;
-        --content3: #3f3f46;
-        --content4: #52525b;
-        --text: #ffffff;
-        --muted: #b2b2b5;
-        --accent: #006fee;
-        --accent-dim: #002147;
-        --border: #3f3f46;
-        --border-inactive: #52525b;
-        --default-400: #3f3f46;
-        --default-500: #65656b;
-        --default-600: #8c8c90;
-        --default-700: #b2b2b5;
-        --default-800: #d9d9da;
-        --shadow-subtle: rgba(255, 255, 255, 0.04);
+        --bg: #1e1e1e;
+        --panel: #252526;
+        --content2: #252526;
+        --content3: #2d2d30;
+        --content4: #3c3c3c;
+        --text: #d4d4d4;
+        --muted: #a6a6a6;
+        --accent: #a78bfa;
+        --accent-dim: #4c1d95;
+        --border: #3c3c3c;
+        --border-inactive: #454545;
+        --default-400: #3c3c3c;
+        --default-500: #505050;
+        --default-600: #6e6e6e;
+        --default-700: #a6a6a6;
+        --default-800: #cccccc;
+        --shadow-subtle: rgba(0, 0, 0, 0.3);
         --shadow-edge: rgba(255, 255, 255, 0.06);
-        --segmented-bg: hsl(240, 4%, 18%);
-        --segmented-label: hsl(240, 4%, 65%);
-        --segmented-label-hover: hsl(240, 4%, 85%);
+        --segmented-bg: #2d2d30;
+        --segmented-label: #a6a6a6;
+        --segmented-label-hover: #cccccc;
         --segmented-active-bg: var(--panel);
         --segmented-active-text: var(--text);
-        --tw-inset-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        --tw-inset-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.25);
         --tw-inset-ring-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
         --tw-ring-offset-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
         --tw-ring-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
@@ -384,7 +384,7 @@
         height: 40px;
         padding: 4px;
         background: var(--segmented-bg);
-        border-radius: 8px;
+        border-radius: 12px;
       }
       .segmented-option {
         height: 32px;
